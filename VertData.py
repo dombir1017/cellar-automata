@@ -19,7 +19,6 @@ class Mesh:
         """Add's a vertex to the mesh
         Parameters: x, y,z The coordinates of the vertex
         Returns: The index of the vertex"""
-        #print(x, y, z)
         self._vertices.append((x, y, z))
         return len(self._vertices) - 1
     
@@ -55,7 +54,7 @@ class Cube(Mesh):
             (5,7)
             )
         
-class UVSphere(Mesh):
+class Icosphere(Mesh):
     icosahedron = list(map(lambda x: x.normalize(), map(Vector3, [
                     [-1,  phi,  0],
                     [ 1,  phi,  0],
@@ -76,6 +75,7 @@ class UVSphere(Mesh):
         [3, 9, 4], [3, 4, 2], [3, 2, 6], [3, 6, 8], [3, 8, 9],
         [4, 9, 5], [2, 4, 11], [6, 2, 10], [8, 6, 7], [9, 8, 1]
     ]
+
     def __init__(self, depth):
         super().__init__()
         for i in range(20):
@@ -85,6 +85,7 @@ class UVSphere(Mesh):
 
     def subdivide(self, v1, v2, v3, depth):
         if depth == 0:
+            ## make traingle between v1, v2, v3
             foo = self.add_vertex(*v1)
             bar = self.add_vertex(*v2)
             foobar = self.add_vertex(*v3)
@@ -92,31 +93,16 @@ class UVSphere(Mesh):
             self.add_edge(bar, foobar)
             self.add_edge(foobar, foo)
             return
-        v12, v23, v31 = [
-            [None, None, None],
-            [None, None, None],
-            [None, None, None]
-        ]
 
-        for i in range(3):
-            v12[i] = v1[i] + v2[i]
-            v23[i] = v2[i] + v3[i]
-            v31[i] = v3[i] + v1[i]
+        v12 = v1 + v2
+        v23 = v2 + v3
+        v31 = v3 + v1
 
-        v12 = normalise(v12)
-        v23 = normalise(v23)
-        v31 = normalise(v31)
+        v12 = v12.normalize()
+        v23 = v23.normalize()
+        v31 = v31.normalize()
+
         self.subdivide(v1, v12, v31, depth - 1)
         self.subdivide(v2, v23, v12, depth - 1)
         self.subdivide(v3, v31, v23, depth - 1)
         self.subdivide(v12, v23, v31, depth - 1)
-
-
-def normalise(v):
-    d = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
-    v[0] /= d
-    v[1] /= d
-    v[2] /= d
-    return v
-
-
