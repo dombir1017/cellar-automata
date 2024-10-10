@@ -1,5 +1,5 @@
 import pygame
-from VertData import Cube
+from VertData import Cube, UVSphere
 
 from pygame.locals import *
 
@@ -12,7 +12,7 @@ def main():
    display = (800,600)
    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
 
-   x = Cube()
+   x = UVSphere()
 
    gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
 
