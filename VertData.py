@@ -2,7 +2,7 @@ from typing import Tuple, Iterable
 from pygame import Vector2, Vector3
 from itertools import combinations
 from math import sqrt
-
+PHI = (1 + sqrt(5)) / 2
 MAGIC_CONSTANT_1 = 2 / sqrt(10 + 2 * sqrt(5))  ## These come from normilzation of vector with 1, golden ratio and 0
 MAGIC_CONSTANT_2 = (1 + sqrt(5)) / sqrt(10 + 2 * sqrt(5))
 
@@ -11,13 +11,18 @@ class Mesh:
         self._vertices: Iterable[Tuple[float, float, float]] = []
         self._edges: Iterable[Tuple[int, int]] = []
 
-    def get_vert_data(self):
-        """Get the mesh vertex data in order"""
+    def sort_vert_data(self) -> None:
+        """Sort the mesh vertex data into travesal order"""
         output = []
         for edge in self._edges:
             for vertex in edge:
                 output.append(self._vertices[vertex])
-        return output
+        self._vertices = output
+
+
+    def get_vert_data(self):
+        """Get the mesh vertex data in order"""
+        return self._vertices
     
     def add_vertex(self, x: float, y: float, z: float) -> int:
         """Add's a vertex to the mesh
@@ -80,9 +85,6 @@ class Icosphere(Mesh):
     ]
 
     def __init__(self, depth):
-        for i in self.icosahedron:
-            print(f"Vector3({tuple(i)})")
-
         super().__init__()
         for i in range(20):
             self.subdivide(self.icosahedron[self.icoindices[i][0]],

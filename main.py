@@ -12,7 +12,7 @@ def main():
    display = (800,600)
    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
 
-   x = Icosphere(2)
+   x = Icosphere(3)
 
    gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
 
