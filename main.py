@@ -13,7 +13,7 @@ def main():
    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
 
    x = Icosphere(2)
-   vertices = x.get_vert_data()
+   vertices = x.get_vert_data() #Changed to no longer get vert data each frame - Dom
 
    gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
 
