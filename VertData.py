@@ -1,5 +1,6 @@
 from typing import Tuple, Iterable
 from pygame import Vector2, Vector3
+from math import pi
 
 class Mesh:
     def __init__(self):
@@ -55,4 +56,11 @@ class UVSphere(Mesh):
         self.add_vertex(0, 1, 0)
 
         for i in range(n_stacks):
-            pass
+            phi = pi * (i + 1) / n_stacks
+            for j in range(n_slices):
+                theta = 2 * pi * j / n_slices
+        
+        for i in range(n_slices):
+            i0 = i + 1
+            i1 = (i + 1) % n_slices + 1
+
