@@ -12,7 +12,9 @@ def main():
    display = (800,600)
    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
 
-   x = Icosphere(3)
+   x = Icosphere(2)
+   x.sort_vert_data()
+
 
    gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
 
@@ -27,7 +29,6 @@ def main():
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
       
       glBegin(GL_LINES)
-      #print(x.get_vert_data())
       for vertex in x.get_vert_data():
          glVertex3fv(vertex)
       glEnd()
