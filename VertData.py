@@ -1,7 +1,10 @@
 from typing import Tuple, Iterable
 from pygame import Vector2, Vector3
 from itertools import combinations
-PHI = (1 + 5 ** 0.5) / 2
+from math import sqrt
+
+MAGIC_CONSTANT_1 = 2 / sqrt(10 + 2 * sqrt(5))  ## These come from normilzation of vector with 1, golden ratio and 0
+MAGIC_CONSTANT_2 = (1 + sqrt(5)) / sqrt(10 + 2 * sqrt(5))
 
 class Mesh:
     def __init__(self):
@@ -9,6 +12,7 @@ class Mesh:
         self._edges: Iterable[Tuple[int, int]] = []
 
     def get_vert_data(self):
+        """Get the mesh vertex data in order"""
         output = []
         for edge in self._edges:
             for vertex in edge:
@@ -22,9 +26,10 @@ class Mesh:
         self._vertices.append((x, y, z))
         return len(self._vertices) - 1
     
-    def add_edge(self, i, j):
+    def add_edge(self, i: int, j: int):
+        """Add a vertex to the mesh
+        Parameters: i, j The indexs of the vertices to be connected"""
         self._edges.append((i, j))
-
 
 class Cube(Mesh): 
     def __init__(self):
@@ -55,22 +60,18 @@ class Cube(Mesh):
             )
         
 class Icosphere(Mesh):
-    icosahedron = list(map(lambda x: x.normalize(), map(Vector3, [
-                    [-1,  PHI,  0],
-                    [ 1,  PHI,  0],
-                    [-1, -PHI,  0],
-                    [ 1, -PHI,  0],
-                    [ 0, -1,  PHI],
-                    [ 0,  1,  PHI],
-                    [ 0, -1, -PHI],
-                    [ 0,  1, -PHI],
-                    [ PHI,  0, -1],
-                    [ PHI,  0,  1],
-                    [-PHI,  0, -1],
-                    [-PHI,  0,  1]])))
-
-
-    
+    icosahedron = [Vector3((-MAGIC_CONSTANT_1, MAGIC_CONSTANT_2, 0.0)),
+                    Vector3((MAGIC_CONSTANT_1, MAGIC_CONSTANT_2, 0.0)),
+                    Vector3((-MAGIC_CONSTANT_1, -MAGIC_CONSTANT_2, 0.0)),
+                    Vector3((MAGIC_CONSTANT_1, -MAGIC_CONSTANT_2, 0.0)),
+                    Vector3((0.0, -MAGIC_CONSTANT_1, MAGIC_CONSTANT_2)),
+                    Vector3((0.0, MAGIC_CONSTANT_1, MAGIC_CONSTANT_2)),
+                    Vector3((0.0, -MAGIC_CONSTANT_1, -MAGIC_CONSTANT_2)),
+                    Vector3((0.0, MAGIC_CONSTANT_1, -MAGIC_CONSTANT_2)),
+                    Vector3((MAGIC_CONSTANT_2, 0.0, -MAGIC_CONSTANT_1)),
+                    Vector3((MAGIC_CONSTANT_2, 0.0, MAGIC_CONSTANT_1)),
+                    Vector3((-MAGIC_CONSTANT_2, 0.0, -MAGIC_CONSTANT_1)),
+                    Vector3((-MAGIC_CONSTANT_2, 0.0, MAGIC_CONSTANT_1))]
     icoindices = [
         [0, 11, 5], [0, 5, 1], [0, 1, 7], [0, 7, 10], [0, 10, 11],
         [1, 5, 9], [5, 11, 4], [11, 10, 2], [10, 7, 6], [7, 1, 8],
@@ -79,6 +80,9 @@ class Icosphere(Mesh):
     ]
 
     def __init__(self, depth):
+        for i in self.icosahedron:
+            print(f"Vector3({tuple(i)})")
+
         super().__init__()
         for i in range(20):
             self.subdivide(self.icosahedron[self.icoindices[i][0]],
