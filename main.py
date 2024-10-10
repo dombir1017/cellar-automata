@@ -13,6 +13,7 @@ def main():
    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
 
    x = Icosphere(2)
+   vertices = x.get_vert_data()
 
    gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
 
@@ -28,7 +29,7 @@ def main():
       
       glBegin(GL_LINES)
       #print(x.get_vert_data())
-      for vertex in x.get_vert_data():
+      for vertex in vertices:
          glVertex3fv(vertex)
       glEnd()
 
