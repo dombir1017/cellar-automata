@@ -12,8 +12,10 @@ def main():
    display = (800,600)
    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
 
-   x = Icosphere(2)
+   #x = Icosphere(2)
+   x = Cube()
    vertices = x.get_vert_data() #Changed to no longer get vert data each frame - Dom
+   colors = x.get_color_data()
 
    gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
 
@@ -27,11 +29,21 @@ def main():
       glRotatef(1, 3, 1, 1)
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
       
-      glBegin(GL_LINES)
-      #print(x.get_vert_data())
-      for vertex in vertices:
-         glVertex3fv(vertex)
+      glBegin(GL_QUADS) #Draw faces using color data
+      i = 0
+      for val in colors:
+         if i%2 == 0:
+            glColor3fv(val)
+         else:
+            glVertex3fv(val)
+         i+=1
       glEnd()
+
+      #glBegin(GL_LINES)   #Draw edges using vert data
+      #print(x.get_vert_data())
+      #for vertex in vertices:
+      #   glVertex3fv(vertex)
+      #glEnd()
 
       pygame.display.flip()
       pygame.time.wait(10)

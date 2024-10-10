@@ -10,6 +10,8 @@ class Mesh:
     def __init__(self):
         self._vertices: Iterable[Tuple[float, float, float]] = []
         self._edges: Iterable[Tuple[int, int]] = []
+        self._colors: Iterable[Tuple[float, float, float]] = []
+        self._surfaces = Iterable[Tuple[int, int, int, int]] = []
 
     def get_vert_data(self):
         """Get the mesh vertex data in order"""
@@ -17,6 +19,19 @@ class Mesh:
         for edge in self._edges:
             for vertex in edge:
                 output.append(self._vertices[vertex])
+        return output
+    
+    def get_color_data(self):
+        """Get the color data for vertices in mesh"""
+        """Returned in format [color, vertex, color, vertex, ...]"""
+        output = []
+        x = 0
+        for surface in self._surfaces:
+            for vertex in surface:
+                output.append(self._colors[x])
+                output.append(self._vertices[vertex])
+            x+=1
+            x = x%2
         return output
     
     def add_vertex(self, x: float, y: float, z: float) -> int:
@@ -57,6 +72,20 @@ class Cube(Mesh):
             (5,1),
             (5,4),
             (5,7)
+            )
+        
+        self._colors = (
+            (1,1,1),
+            (1,0,0),
+            )
+        
+        self._surfaces = (
+            (0,1,2,3),
+            (3,2,7,6),
+            (6,7,5,4),
+            (4,5,1,0),
+            (1,5,7,2),
+            (4,0,3,6)
             )
         
 class Icosphere(Mesh):
