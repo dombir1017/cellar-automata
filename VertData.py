@@ -1,7 +1,7 @@
 from typing import Tuple, Iterable
 from pygame import Vector2, Vector3
-from math import pi, sqrt
-phi = (1 + 5 ** 0.5) / 2
+from itertools import combinations
+PHI = (1 + 5 ** 0.5) / 2
 
 class Mesh:
     def __init__(self):
@@ -56,18 +56,20 @@ class Cube(Mesh):
         
 class Icosphere(Mesh):
     icosahedron = list(map(lambda x: x.normalize(), map(Vector3, [
-                    [-1,  phi,  0],
-                    [ 1,  phi,  0],
-                    [-1, -phi,  0],
-                    [ 1, -phi,  0],
-                    [ 0, -1,  phi],
-                    [ 0,  1,  phi],
-                    [ 0, -1, -phi],
-                    [ 0,  1, -phi],
-                    [ phi,  0, -1],
-                    [ phi,  0,  1],
-                    [-phi,  0, -1],
-                    [-phi,  0,  1]])))
+                    [-1,  PHI,  0],
+                    [ 1,  PHI,  0],
+                    [-1, -PHI,  0],
+                    [ 1, -PHI,  0],
+                    [ 0, -1,  PHI],
+                    [ 0,  1,  PHI],
+                    [ 0, -1, -PHI],
+                    [ 0,  1, -PHI],
+                    [ PHI,  0, -1],
+                    [ PHI,  0,  1],
+                    [-PHI,  0, -1],
+                    [-PHI,  0,  1]])))
+
+
     
     icoindices = [
         [0, 11, 5], [0, 5, 1], [0, 1, 7], [0, 7, 10], [0, 10, 11],
