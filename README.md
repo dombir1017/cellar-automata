@@ -1,1 +1,1 @@
-# cellar-automater
+# cellar-automata
