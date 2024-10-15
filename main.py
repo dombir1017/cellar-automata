@@ -1,5 +1,5 @@
 import pygame
-from VertData import Cube, Icosphere
+from Cells import Icosphere
 
 from pygame.locals import *
 
@@ -27,18 +27,15 @@ def main():
          if event.type == pygame.QUIT:
             pygame.quit()
             quit()
+
       glRotatef(1, 3, 1, 1)
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
       
       glBegin(GL_TRIANGLES)
-      test = 0
-      for vertex in x.get_vert_data():
-         if test <= 10: 
-            glColor3f(1, 0.5, 0)
-         else:
-            glColor3f(0, 0.5, 0)
-         glVertex3fv(vertex)
-         test += 1
+      for face in x.faces:
+         for vertex in face.get_vert_data():
+            glColor3f(*face.color)
+            glVertex3fv(vertex)
       glEnd()
 
       pygame.display.flip()
