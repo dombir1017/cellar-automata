@@ -97,9 +97,6 @@ class Icosphere(Mesh):
             foo = self.add_vertex(*v1)
             bar = self.add_vertex(*v2)
             foobar = self.add_vertex(*v3)
-            self.add_edge(foo, bar)
-            self.add_edge(bar, foobar)
-            self.add_edge(foobar, foo)
             return
 
         v12 = v1 + v2
