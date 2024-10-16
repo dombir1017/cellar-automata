@@ -1,4 +1,4 @@
-from typing import Tuple, Iterable
+from typing import Tuple, Iterable, List
 from pygame import Vector3
 
 class Mesh:

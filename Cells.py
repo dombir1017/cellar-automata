@@ -2,6 +2,7 @@ from VertData import ColoredTriangle
 from math import sqrt
 from pygame import Vector3
 from random import randint
+from typing import List, Dict
 
 PHI = (1 + sqrt(5)) / 2
 MAGIC_CONSTANT_1 = 2 / sqrt(10 + 2 * sqrt(5))  ## These come from normilzation of vector with 1, golden ratio and 0
@@ -28,18 +29,16 @@ class Icosphere():
     ]
 
     def __init__(self, depth):
-        super().__init__()
         self.faces = []
         for i in range(20):
             self.subdivide(self.icosahedron[self.icoindices[i][0]],
                            self.icosahedron[self.icoindices[i][1]],
-                           self.icosahedron[self.icoindices[i][2]], depth)
-            
+                           self.icosahedron[self.icoindices[i][2]], depth)            
 
     def subdivide(self, v1, v2, v3, depth):
         if depth == 0:
             ## make traingle between v1, v2, v3
-            self.faces.append(ColoredTriangle(v1, v2, v3, (1, 0.5, 0) if randint(1, 2) == 1 else (1, 0, 0)))
+            self.faces.append(CellularAutomotaTriangle(v1, v2, v3))
             return
 
         v12 = v1 + v2
@@ -54,3 +53,58 @@ class Icosphere():
         self.subdivide(v2, v23, v12, depth - 1)
         self.subdivide(v3, v31, v23, depth - 1)
         self.subdivide(v12, v23, v31, depth - 1)
+
+    def getVertNeighbours(self, v):
+        faces: List[CellularAutomotaTriangle] = []
+        for face in self.faces:
+            if v in face._vertices:
+                faces.append(face)
+        return faces
+
+    def calcNeighbours(self):
+        vtoface: Dict[str, List[CellularAutomotaTriangle]] = {}
+        for face in self.faces:
+            ## dictionary maps vertices to faces that contain that vertex
+            for v in face._vertices:
+                vtoface[str(v)] = self.getVertNeighbours(v)
+
+        #faces: List[ColoredTriangle] = []
+        #faces.append(vtoface[self.tuple_to_string(self.faces[25]._vertices[1])])
+        #for listface in faces:
+        #    for face in listface:
+        #        face.color = (1, 1, 1)
+
+        ## verticies tell that face that it has neighbours of the other vertices in the list
+        for key in vtoface.keys():
+            for face in vtoface[key]:
+                face.neighbours.extend([e for e in vtoface[key] if e != face])
+               # face.neighbours = list(set(face.neighbours))
+
+        for face in self.faces:
+            face.neighbours = set(filter(lambda x: face.neighbours.count(x) == 2, face.neighbours))
+
+    def tuple_to_string(self, x):
+        return "(" + ", ".join(map(str, x)) + ")"
+
+
+class CellularAutomotaTriangle(ColoredTriangle):
+    def __init__(self, v1, v2, v3, color=(1, 0.5, 0)):
+        super().__init__(v1, v2, v3, color)
+        self.neighbours = []
+        self.value = 0
+    
+    def showNeighbours(self):
+        for n in self.neighbours:
+            n.color = (1, 1, 1)
+
+    def cal_next_value(self):
+        n = sum(map(lambda p: p.value, self.neighbours))
+        self.next_value = (0, 0, 1, not self.value)[n]
+
+    def change_to_next_value(self):
+        self.value = self.next_value
+
+    def update_color(self):
+        self.color = (self.value, 1, 1)
+    
+
