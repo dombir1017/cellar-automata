@@ -97,14 +97,20 @@ class CellularAutomotaTriangle(ColoredTriangle):
         for n in self.neighbours:
             n.color = (1, 1, 1)
 
+    # def cal_next_value(self):
+    #     n = sum(map(lambda p: p.value, self.neighbours))
+    #     self.next_value = (0, 0, 1, not self.value)[n]
+
     def cal_next_value(self):
         n = sum(map(lambda p: p.value, self.neighbours))
-        self.next_value = (0, 0, 1, not self.value)[n]
+        #self.next_value = max(-0.5 * (n - 1.5) ** 2 + 1, 0)
+        self.next_value = max(2.3 * (2 ** -n) * (-0.75 * (n - 1.5) ** 2 + 1), 0)
+
 
     def change_to_next_value(self):
         self.value = self.next_value
 
     def update_color(self):
-        self.color = (self.value, 1, 1)
+        self.color = (self.value, self.value, self.value)
     
 

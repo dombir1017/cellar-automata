@@ -7,17 +7,19 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 
 from random import randint
+import time
 
 def make_starting_state(x):
    for face in x.faces:
-      face.value = randint(0, 1)
+      v = randint(0, 100) / 100
+      face.value = v if randint(0, 100) > 80 else 0
 
 def main():
    pygame.init()
    display = (800,600)
    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
 
-   x = Icosphere(3)
+   x = Icosphere(4)
    x.calcNeighbours()
    make_starting_state(x)
    #x.faces[25].value = 1
@@ -31,7 +33,7 @@ def main():
    glTranslatef(0.0,0.0, -5)
    glEnable(GL_DEPTH_TEST)
    glRotatef(-1, 3, 1, 1)
-   loop = 0
+   t1 = time.time()
    while True:
       for event in pygame.event.get():
          if event.type == pygame.QUIT:
@@ -48,15 +50,14 @@ def main():
             glVertex3fv(vertex)
       glEnd()
 
-      loop += 1
-      if loop == 20:
-         loop = 0
+      if time.time() - t1 >= 1:
          for face in x.faces:
             face.cal_next_value()
 
          for face in x.faces:
             face.change_to_next_value()
             face.update_color()
+         t1 = time.time()
 
       pygame.display.flip()
       pygame.time.wait(10)
