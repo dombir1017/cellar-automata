@@ -12,14 +12,15 @@ import time
 def make_starting_state(x):
    for face in x.faces:
       v = randint(0, 100) / 100
-      face.value = v if randint(0, 100) > 80 else 0
+      face.value = 1 if randint(0, 100) > 80 else 0
 
 def main():
    pygame.init()
    display = (800,600)
    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
 
-   x = Icosphere(4)
+   x = Icosphere(6)
+   print(len(x.faces))
    x.calcNeighbours()
    make_starting_state(x)
    #x.faces[25].value = 1
