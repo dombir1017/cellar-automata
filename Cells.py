@@ -54,13 +54,6 @@ class Icosphere():
         self.subdivide(v3, v31, v23, depth - 1)
         self.subdivide(v12, v23, v31, depth - 1)
 
-    def getVertNeighbours(self, v):
-        faces: List[CellularAutomotaTriangle] = []
-        for face in self.faces:
-            if v in face._vertices:
-                faces.append(face)
-        return faces
-
     def calcNeighbours(self):
         # vtoface: Dict[str, List[CellularAutomotaTriangle]] = {}
         # for face in self.faces:
