@@ -1,6 +1,4 @@
 import pygame
-from Cells import Icosphere
-
 from pygame.locals import *
 
 from OpenGL.GL import *
@@ -8,6 +6,8 @@ from OpenGL.GLU import *
 
 from random import randint
 import time
+
+from Cells import IcosphereCellularAutomate
 
 def make_starting_state(x):
    for face in x.faces:
@@ -18,22 +18,18 @@ def main():
    pygame.init()
    display = (800,600)
    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
-
-   x = Icosphere(6)
-   print(len(x.faces))
-   x.calcNeighbours()
-   make_starting_state(x)
-   #x.faces[25].value = 1
-   #x.faces[26].value = 1
-   #x.faces[27].value = 1
-   for face in x.faces:
-      face.update_color()
-
    gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
 
    glTranslatef(0.0,0.0, -5)
    glEnable(GL_DEPTH_TEST)
    glRotatef(-1, 3, 1, 1)
+
+   x = IcosphereCellularAutomate(5)
+   print(f"Number of faces: {len(x.faces)}")
+   x.calcNeighbours()
+   make_starting_state(x)
+   x.update_color()
+
    t1 = time.time()
    while True:
       for event in pygame.event.get():
@@ -57,7 +53,7 @@ def main():
 
          for face in x.faces:
             face.change_to_next_value()
-            face.update_color()
+            face.recalc_color_from_value()
          t1 = time.time()
 
       pygame.display.flip()
