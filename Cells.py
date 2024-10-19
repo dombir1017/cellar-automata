@@ -54,34 +54,27 @@ class Icosphere():
         self.subdivide(v3, v31, v23, depth - 1)
         self.subdivide(v12, v23, v31, depth - 1)
 
-    def getVertNeighbours(self, v):
-        faces: List[CellularAutomotaTriangle] = []
-        for face in self.faces:
-            if v in face._vertices:
-                faces.append(face)
-        return faces
-
     def calcNeighbours(self):
-        vtoface: Dict[str, List[CellularAutomotaTriangle]] = {}
+        # vtoface: Dict[str, List[CellularAutomotaTriangle]] = {}
+        # for face in self.faces:
+        #     for v in face._vertices:
+        #         vtoface[str(v)] = self.getVertNeighbours(v)
+        vtoface = {}
         for face in self.faces:
-            ## dictionary maps vertices to faces that contain that vertex
             for v in face._vertices:
-                vtoface[str(v)] = self.getVertNeighbours(v)
+                current = vtoface.get(str(v), [])
+                vtoface[str(v)] = current + [face]
 
-        #faces: List[ColoredTriangle] = []
-        #faces.append(vtoface[self.tuple_to_string(self.faces[25]._vertices[1])])
-        #for listface in faces:
-        #    for face in listface:
-        #        face.color = (1, 1, 1)
 
-        ## verticies tell that face that it has neighbours of the other vertices in the list
         for key in vtoface.keys():
             for face in vtoface[key]:
                 face.neighbours.extend([e for e in vtoface[key] if e != face])
-               # face.neighbours = list(set(face.neighbours))
 
         for face in self.faces:
             face.neighbours = set(filter(lambda x: face.neighbours.count(x) == 2, face.neighbours))
+           ## face.neighbours = dict(zip(face.neighbours, map(lambda x: face.neighbours.count(x), face.neighbours)))
+
+
 
     def tuple_to_string(self, x):
         return "(" + ", ".join(map(str, x)) + ")"
@@ -97,14 +90,14 @@ class CellularAutomotaTriangle(ColoredTriangle):
         for n in self.neighbours:
             n.color = (1, 1, 1)
 
-    # def cal_next_value(self):
-    #     n = sum(map(lambda p: p.value, self.neighbours))
-    #     self.next_value = (0, 0, 1, not self.value)[n]
-
     def cal_next_value(self):
         n = sum(map(lambda p: p.value, self.neighbours))
-        #self.next_value = max(-0.5 * (n - 1.5) ** 2 + 1, 0)
-        self.next_value = max(2.3 * (2 ** -n) * (-0.75 * (n - 1.5) ** 2 + 1), 0)
+        self.next_value = (not self.value, 0, 1, not self.value)[n]
+
+    # def cal_next_value(self):
+    #     n = sum(map(lambda p: p.value, self.neighbours))
+    #     #self.next_value = max(-0.5 * (n - 1.5) ** 2 + 1, 0)
+    #     self.next_value = max(2.3 * (2 ** -n) * (-0.75 * (n - 1.5) ** 2 + 1), 0)
 
 
     def change_to_next_value(self):
