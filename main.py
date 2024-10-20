@@ -9,6 +9,8 @@ import time
 
 from Cells import IcosphereCellularAutomate
 
+from Projector import Projector
+
 def make_starting_state(x):
    for face in x.faces:
       v = randint(0, 100) / 100
@@ -24,11 +26,14 @@ def main():
    glEnable(GL_DEPTH_TEST)
    glRotatef(-1, 3, 1, 1)
 
-   x = IcosphereCellularAutomate(3)
+   x = IcosphereCellularAutomate(1)
    print(f"Number of faces: {len(x.faces)}")
    x.calcNeighbours()
-   ##make_starting_state(x)
+   make_starting_state(x)
    x.update_color()
+
+   p = Projector()
+   p.construct_projection(x)
    
    t1 = time.time()
    while True:
@@ -42,20 +47,18 @@ def main():
       
       glBegin(GL_TRIANGLES)
       for face in x.faces:
-         for vertex in face.get_vert_data():
+         for vertex in p.get_verticies(face):
             glColor3f(*face.color)
             glVertex3fv(vertex)
       glEnd()
 
-      if time.time() - t1 >= 0.1:
-         # for face in x.faces:
-         #    face.cal_next_value()
+      if time.time() - t1 >= 1:
+         for face in x.faces:
+            face.cal_next_value()
 
-         # for face in x.faces:
-         #    face.change_to_next_value()
-         #    face.recalc_color_from_value()
-         f = x.faces[0]
-         print(f.get_vert_data())
+         for face in x.faces:
+            face.change_to_next_value()
+            face.recalc_color_from_value()
          t1 = time.time()
 
       pygame.display.flip()

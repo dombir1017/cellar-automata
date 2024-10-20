@@ -18,7 +18,7 @@ class CellularAutomotaTriangle(ColoredTriangle):
         self.value = self.next_value
 
     def recalc_color_from_value(self):
-        self.change_color(self.value, self.value, self.value)
+        self.change_color(self.value, self.value, 0.5)
 
 class IcosphereCellularAutomate(Icosphere):
     def __init__(self, depth):
