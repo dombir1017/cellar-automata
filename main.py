@@ -24,12 +24,12 @@ def main():
    glEnable(GL_DEPTH_TEST)
    glRotatef(-1, 3, 1, 1)
 
-   x = IcosphereCellularAutomate(5)
+   x = IcosphereCellularAutomate(3)
    print(f"Number of faces: {len(x.faces)}")
    x.calcNeighbours()
-   make_starting_state(x)
+   ##make_starting_state(x)
    x.update_color()
-
+   
    t1 = time.time()
    while True:
       for event in pygame.event.get():
@@ -37,7 +37,7 @@ def main():
             pygame.quit()
             quit()
 
-      glRotatef(1, 3, 1, 1)
+      #glRotatef(1, 3, 1, 1)
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
       
       glBegin(GL_TRIANGLES)
@@ -47,13 +47,15 @@ def main():
             glVertex3fv(vertex)
       glEnd()
 
-      if time.time() - t1 >= 1:
-         for face in x.faces:
-            face.cal_next_value()
+      if time.time() - t1 >= 0.1:
+         # for face in x.faces:
+         #    face.cal_next_value()
 
-         for face in x.faces:
-            face.change_to_next_value()
-            face.recalc_color_from_value()
+         # for face in x.faces:
+         #    face.change_to_next_value()
+         #    face.recalc_color_from_value()
+         f = x.faces[0]
+         print(f.get_vert_data())
          t1 = time.time()
 
       pygame.display.flip()
