@@ -29,7 +29,7 @@ def main():
    x = IcosphereCellularAutomate(1)
    print(f"Number of faces: {len(x.faces)}")
    x.calcNeighbours()
-   make_starting_state(x)
+   #make_starting_state(x)
    x.update_color()
 
    p = Projector()

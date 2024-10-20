@@ -3,6 +3,7 @@ from typing import List
 import math
 
 
+
 class Projector:
     def __init__(self):
         self.face_to_vertex = {}
@@ -16,13 +17,12 @@ class Projector:
         to_process = list(zip(s.faces[0].neighbours, [(0, 0, 0), (0.2, 0, 0), (0.1, 0.1732, 0)], [(0.2, 0, 0), (0.1, 0.1732, 0), (0, 0, 0)], [(0.1, 0.1732, 0), (0, 0, 0), (0.2, 0, 0)]))
         print(to_process)
         while to_process != []:
-           f, v1, v2, v3 = to_process.pop(0)
-           if f in self.face_to_vertex.keys(): continue
-
-           v_new = self.calc_final_vertices(v1, v2, v3)
-           self.face_to_vertex[f] = (v1, v2, v_new)
-
-           to_process.extend(list(zip(f.neighbours, (v1, v2, v_new), (v2, v_new, v1), (v_new, v2, v1))))
+            f, v1, v2, v3 = to_process.pop(0)
+            if f in self.face_to_vertex.keys(): continue
+            
+            v_new = self.calc_final_vertices(v1, v2, v3)
+            self.face_to_vertex[f] = (v1, v2, v_new)
+            to_process.extend(list(zip(f.neighbours, (v1, v2, v_new), (v2, v_new, v1), (v_new, v2, v1))))
         print(f"number of projections: {len(self.face_to_vertex)}")
         print(f"Number of unique keys {len(set("".join(map(str, self.face_to_vertex.values()))))}")
 
