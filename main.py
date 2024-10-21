@@ -22,14 +22,14 @@ def main():
    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
    gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
 
-   glTranslatef(0.0,0.0, -5)
+   glTranslatef(0.0, 0.0, -5)
    glEnable(GL_DEPTH_TEST)
    glRotatef(-1, 3, 1, 1)
 
-   x = IcosphereCellularAutomate(1)
+   x = IcosphereCellularAutomate(5)
    print(f"Number of faces: {len(x.faces)}")
    x.calcNeighbours()
-   #make_starting_state(x)
+   make_starting_state(x)
    x.update_color()
 
    p = Projector()
@@ -42,7 +42,7 @@ def main():
             pygame.quit()
             quit()
 
-      #glRotatef(1, 3, 1, 1)
+      glRotatef(1, 3, 1, 1)
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
       
       glBegin(GL_TRIANGLES)

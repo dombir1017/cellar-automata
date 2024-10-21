@@ -1,8 +1,7 @@
 from Cells import CellularAutomotaTriangle
 from typing import List
 import math
-
-
+import time
 
 class Projector:
     def __init__(self):
@@ -15,17 +14,14 @@ class Projector:
     def construct_projection(self, s):
         self.face_to_vertex[s.faces[0]] = ((0, 0, 0), (0.2, 0, 0), (0.1, 0.1732, 0))
         to_process = list(zip(s.faces[0].neighbours, [(0, 0, 0), (0.2, 0, 0), (0.1, 0.1732, 0)], [(0.2, 0, 0), (0.1, 0.1732, 0), (0, 0, 0)], [(0.1, 0.1732, 0), (0, 0, 0), (0.2, 0, 0)]))
-        print(to_process)
+        
         while to_process != []:
             f, v1, v2, v3 = to_process.pop(0)
             if f in self.face_to_vertex.keys(): continue
-            
+
             v_new = self.calc_final_vertices(v1, v2, v3)
             self.face_to_vertex[f] = (v1, v2, v_new)
             to_process.extend(list(zip(f.neighbours, (v1, v2, v_new), (v2, v_new, v1), (v_new, v2, v1))))
-        print(f"number of projections: {len(self.face_to_vertex)}")
-        print(f"Number of unique keys {len(set("".join(map(str, self.face_to_vertex.values()))))}")
-
 
     def calc_final_vertices(self, A, B, not_C):
         # Calculate the midpoint of A and B
@@ -54,9 +50,10 @@ class Projector:
         # Two possible positions for the third vertex (above or below the line AB)
         C1 = (mid_x + height * unit_perp_x, mid_y + height * unit_perp_y, 0)
         C2 = (mid_x - height * unit_perp_x, mid_y - height * unit_perp_y, 0)
-        print(C1, C2, not_C)
-        if self.distance(C1, not_C) > 0.0001 and self.distance(C2, not_C) > 0.0001: input()
-        return C2 if self.distance(C1, not_C) > 0.0001 else C1  # Return both possibilities for the third vertex
+       
+        if self.distance(C1, not_C) < 0.001: return C2
+        if self.distance(C2, not_C) < 0.001: return C1
+        
     
     def distance(self, A, B):
         return ((A[0] - B[0]) ** 2) - ((A[1] - B[1]) ** 2)
