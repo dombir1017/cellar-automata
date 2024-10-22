@@ -1,7 +1,5 @@
-from Cells import CellularAutomotaTriangle
 from typing import List
 import math
-import time
 
 class Projector:
     def __init__(self):
@@ -51,8 +49,9 @@ class Projector:
         C1 = (mid_x + height * unit_perp_x, mid_y + height * unit_perp_y, 0)
         C2 = (mid_x - height * unit_perp_x, mid_y - height * unit_perp_y, 0)
        
-        if self.distance(C1, not_C) < 0.001: return C2
-        if self.distance(C2, not_C) < 0.001: return C1
+        # if self.distance(C1, not_C) < 0.01: return C2
+        # if self.distance(C2, not_C) < 0.01: return C1
+        return max(C1, C2, key = lambda x: self.distance(x, not_C))
         
     
     def distance(self, A, B):

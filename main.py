@@ -12,11 +12,14 @@ from Cells import IcosphereCellularAutomate
 from Projector import Projector
 
 def make_starting_state(x):
+   x.faces[0].value = 1
    for face in x.faces:
-      v = randint(0, 100) / 100
-      face.value = 1 if randint(0, 100) > 80 else 0
+       v = randint(0, 100) / 100
+       face.value = 1 if randint(0, 100) > 80 else 0
 
 def main():
+   PROJECT = False
+
    pygame.init()
    display = (800,600)
    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
@@ -26,7 +29,7 @@ def main():
    glEnable(GL_DEPTH_TEST)
    glRotatef(-1, 3, 1, 1)
 
-   x = IcosphereCellularAutomate(5)
+   x = IcosphereCellularAutomate(4)
    print(f"Number of faces: {len(x.faces)}")
    x.calcNeighbours()
    make_starting_state(x)
@@ -42,12 +45,12 @@ def main():
             pygame.quit()
             quit()
 
-      glRotatef(1, 3, 1, 1)
+      if not PROJECT: glRotatef(1, 3, 1, 1)
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
       
       glBegin(GL_TRIANGLES)
       for face in x.faces:
-         for vertex in p.get_verticies(face):
+         for vertex in p.get_verticies(face) if PROJECT else face._vertices:
             glColor3f(*face.color)
             glVertex3fv(vertex)
       glEnd()

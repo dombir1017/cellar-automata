@@ -13,6 +13,7 @@ class CellularAutomotaTriangle(ColoredTriangle):
     def cal_next_value(self):
         n = sum(map(lambda p: p.value, self.neighbours))
         self.next_value = (not self.value, 0, 1, not self.value)[n]
+       # self.next_value = 0 if n == 0 else 1
 
     def change_to_next_value(self):
         self.value = self.next_value
