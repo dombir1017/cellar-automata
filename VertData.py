@@ -8,28 +8,43 @@ MAGIC_CONSTANT_2 = (1 + sqrt(5)) / sqrt(10 + 2 * sqrt(5))
 
 class Mesh:
     def __init__(self, *arg):
-        self._vertices: Iterable[Tuple[float, float, float]] = []
-        for v in arg:
-            self.add_vertex(*v)
+        self._vertices: List[Vector3] = list(arg)
+
 
     def get_vert_data(self):
         """Get the mesh vertex data in order"""
         return self._vertices
     
-    def add_vertex(self, x: float, y: float, z: float) -> int:
+    def add_vertex(self, p : Vector3) -> int:
         """Add's a vertex to the mesh
         Parameters: x, y,z The coordinates of the vertex
         Returns: The index of the vertex"""
-        self._vertices.append((x, y, z))
+        self._vertices.append(p)
         return len(self._vertices) - 1
 
-class ColoredTriangle(Mesh):
-    def __init__(self, v1, v2, v3, color = (1, 0.5, 0)):
+class CellularAutomotaTriangle(Mesh):
+    def __init__(self, v1, v2, v3, color=(1, 0.5, 0)):
         super().__init__(v1, v2, v3)
         self.color = color
-
+        self.neighbours = []
+        self.value, self.next_value = 0, 0
+    
     def change_color(self, r, g, b):
         self.color = (r, g, b)
+
+    def showNeighbours(self):
+        for n in self.neighbours:
+            n.color = (1, 1, 1)
+
+    def cal_next_value(self):
+        n = sum(map(lambda p: p.value, self.neighbours))
+        self.next_value = (not self.value, 0, 1, not self.value)[n]
+
+    def change_to_next_value(self):
+        self.value = self.next_value
+
+    def recalc_color_from_value(self):
+        self.change_color(self.value, self.value, self.value)
         
 class Icosphere():
     icosahedron = [Vector3((-MAGIC_CONSTANT_1, MAGIC_CONSTANT_2, 0.0)),
@@ -77,7 +92,26 @@ class Icosphere():
         self.subdivide(v12, v23, v31, depth - 1)
 
     def make_face(self, v1, v2, v3):
-        self.faces.append(ColoredTriangle(v1, v2, v3))
+       self.faces.append(CellularAutomotaTriangle(v1, v2, v3))
+
+    def calcNeighbours(self):
+        vtoface = {}
+        for face in self.faces:
+            for v in face._vertices:
+                current = vtoface.get(str(v), [])
+                vtoface[str(v)] = current + [face]
+
+        for key in vtoface.keys():
+            for face in vtoface[key]:
+                face.neighbours.extend([e for e in vtoface[key] if e != face])
+
+        for face in self.faces:
+            face.neighbours = set(filter(lambda x: face.neighbours.count(x) == 2, face.neighbours))
+           ## face.neighbours = dict(zip(face.neighbours, map(lambda x: face.neighbours.count(x), face.neighbours)))
+
+    def update_color(self):
+        for f in self.faces:
+            f.recalc_color_from_value()
 
 
 class Cube(Mesh): 

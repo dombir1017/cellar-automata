@@ -7,7 +7,7 @@ from OpenGL.GLU import *
 from random import randint
 import time
 
-from Cells import IcosphereCellularAutomate
+from VertData import Icosphere
 
 def make_starting_state(x):
    for face in x.faces:
@@ -24,7 +24,7 @@ def main():
    glEnable(GL_DEPTH_TEST)
    glRotatef(-1, 3, 1, 1)
 
-   x = IcosphereCellularAutomate(5)
+   x = Icosphere(3)
    print(f"Number of faces: {len(x.faces)}")
    x.calcNeighbours()
    make_starting_state(x)
@@ -44,7 +44,7 @@ def main():
       for face in x.faces:
          for vertex in face.get_vert_data():
             glColor3f(*face.color)
-            glVertex3fv(vertex)
+            glVertex3fv((vertex.x, vertex.y, vertex.z))
       glEnd()
 
       if time.time() - t1 >= 1:
